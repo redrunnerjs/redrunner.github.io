@@ -1,0 +1,36 @@
+site_name: RedRunner
+site_url: https://redrunnner.js.org/
+site_author: Andrew Buchan
+site_description: "A framework with legs"
+repo_url: "https://redrunnerjs.github.com/redrunner.github.io"
+copyright: "RedRunner is licensed under the <a href='https://andyhasit.github.com/redrunner/master/LICENSE.md'>MIT license</a>"
+
+edit_uri: edit/dev/docs/
+
+
+theme:
+    name: null
+    custom_dir: theme
+
+extra_css:
+  - /static/css/index.css
+extra_javascript:
+  - static/js/index.js
+
+extra:
+  lib_url: https://github.com/andyhasit/redrunner
+  favicon: /static/img/favicon.png
+  theme_color: "#00818a"
+
+markdown_extensions:
+    - toc:
+        anchorlink: true
+
+nav:
+  - Home: index.md
+  - Read:
+    - Design: design.md
+    - Performance: performance.md
+    - Size: size.md
+  - Docs:
+    - Tutorial: tutorial.md
