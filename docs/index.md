@@ -44,7 +44,7 @@ template: main-no-toc.html
           </footer>
         </div>
         <p>
-          Of course, high scores on benchmarks won't necessarily prevent or solve real world <a href="/read/performance">performance</a> issues.
+          Raw speed is nice but isn't enough to prevent (or fix) the serious <a href="/read/performance">performance</a> issues which hit frontend.
         </p>
       </div>
     </div>
@@ -55,46 +55,53 @@ template: main-no-toc.html
   <div class="pure-g">
     <div class="pure-u-1 pure-u-sm-1-2">
       <div class="info__block">
-        <h2>Simple</h2>
+        <h2>Clean</h2>
         <p>
-          You can learn RedRunner in under an hour. Not just how to use it, but also how it works.
+          A special <a href="/read/compiler">compiler</a> generates code from your code to allow the latter to be as lean and clean as it is possible to be without introducing custom syntax.
         </p>
         <p>
-          RedRunner's internals are so simple you can always tell exactly how, when and why every single DOM element gets updated.
+          There are some shorthand notations to save typing, but other than that it's all just lean JavaScript.
+      </div>
+    </div>
+    <div class="pure-u-1 pure-u-sm-1-2">
+      <div class="info__block">
+        <h2>Clear</h2>
+        <p>
+          The generated code updates the DOM in a very direct and granular way using simple wrapper elements.
         </p>
         <p>
-          The <a href="/docs/tutorial">tutorial</a> covers all you need to know.
+          One of the (<a href="/read/design">many</a>) advantages of this is being able to see exactly how, when and why any part of the DOM is being updated.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="info">
+  <div class="pure-g">
+    <div class="pure-u-1 pure-u-sm-1-2">
+      <div class="info__block">
+        <h2>Helpful</h2>
+        <p>
+          RedRunner has dynamic documentation built-in.
+          Just put a <code>?</code> in front of the directive you need help with:
+```html
+<div ? :items="todos|ToDo"></div>
+```
+          And a help page will pop up in your browser. It even works for <a href="/read/super-powers">custom directives</a>.
         </p>
       </div>
     </div>
     <div class="pure-u-1 pure-u-sm-1-2">
       <div class="info__block">
-        <h2>Powerful</h2>
+      <h2>Powerful</h2>
         <p>
-          Most operations include a seamless, granular and progressive manual override features.
+          You can easily override virtually any behaviour, at as granular level as you like, all without stepping out of the framework, or clashing with it.
         </p>
         <p>
-          You can literraly do anything you'd want to do in a web app, all without breaking out of the framework.
+          And that's just one of the <a href="/read/super-powers">super powers</a> you can use to resolve performance bottlenecks, improve code structure, or anything else.
         </p>
-        <p>
-          You can use this power to optimize <a href="/read/performance">performance</a>, <a href="/read/bundle_size">bundle size</a> or code reuse and <a href="/read/readability">readability</a>.
-        </p>
-        <!-- 
-          You can take progressive control of any
- (data checking, DOM updates, DOM pooling etc) 
-
-        <p>
-          <b>Seamlessly</b> and <b>progressively</b> take <b>granular</b> control of any operations (data checking, DOM updates, DOM pooling etc).
-        </p>
-        <p>
-          And you can do it in a and 
-        </p>
-          Raw speed is nice but won't prevent or solve performance bottlenecks - for that you need the option of control.
-          The control is <b>granular</b>, so could be for one component, a class of components, certain parts of the component, individual DOM elements or certain aspects of those (e.g. manually control styles, but let RedRunner update text).
-          RedRunner lets you  and <b>progressively</b> take <b>granular</b> 
-        <p>
-          You can integrate control <b>seamlessly</b> into the framework's operations without clashing, or feeling like you've stepped out of the framework.
-        -->
       </div>
     </div>
   </div>
