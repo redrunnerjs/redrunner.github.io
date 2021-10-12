@@ -3,7 +3,7 @@ site_url: https://redrunnner.js.org/
 site_author: Andrew Buchan
 site_description: "A framework with legs"
 repo_url: "https://redrunnerjs.github.com/redrunner.github.io"
-copyright: "RedRunner is licensed under the <a href='https://andyhasit.github.com/redrunner/master/LICENSE.md'>MIT license</a>"
+copyright: "MIT license"
 
 edit_uri: edit/dev/docs/
 
@@ -27,10 +27,11 @@ markdown_extensions:
         anchorlink: true
 
 nav:
-  - Home: index.md
+  - Home: index
   - Read:
-    - Design: design.md
-    - Performance: performance.md
-    - Size: size.md
+    - Design: /design
+    - Performance: /performance
+    - Readability: /readability
+    - Size: /size
   - Docs:
-    - Tutorial: tutorial.md
+    - Tutorial: /tutorial

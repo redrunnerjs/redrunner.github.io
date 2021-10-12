@@ -38,12 +38,14 @@ code {
   word-break: break-word;
   background-color: #f8f8f8;
   border-radius: 4px;
-  padding: 3px 5px;
-  margin: 4px;
+  padding: 3px 2px;
+  margin: 2px;
   font-family: 'Roboto Mono', monospace;
   color: #00515a;
   white-space: pre-wrap;
+  font-size: small;
 }
+
 h3 code {
   background-color: #fafafa;
   color: #00818A;
