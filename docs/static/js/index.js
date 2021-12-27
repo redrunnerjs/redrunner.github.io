@@ -65,21 +65,3 @@ function drawChart(data, key, divId, unit) {
   var div = document.getElementById(divId);
   div.innerHTML = table;
 }
-
-
-
-// function drawCheckTable(data, divId) {
-
-//   var groupedData
-//   var table = '<table class="stats-table"><tbody>';
-//   data.forEach(function(entry) {
-//     var frameworkTd = '<td>'  + entry.framework + '</td>';
-//     var cells = [frameworkTd];
-//     entry.checks.
-//     var row = '<tr class="stats-row">' + cells + '</tr>';
-//     table += row;
-//   })
-//   table += '</tbody></table>';
-//   var div = document.getElementById(divId);
-//   div.innerHTML = table;
-// }

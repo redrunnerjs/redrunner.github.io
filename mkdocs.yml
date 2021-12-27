@@ -29,11 +29,6 @@ markdown_extensions:
 
 nav:
   - Home: /
-  - Read:
-    - Design: /design
-    - Performance: /performance
-    - Readability: /readability
-    - Size: /size
   - Docs:
     - Tour: /tour
     - Overview: /overview 

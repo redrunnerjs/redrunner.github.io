@@ -26,7 +26,7 @@ template: main-no-toc.html
           </footer>
         </div>
         <p>
-          RedRunner and Svelte both use compilation to hit those sizes, but differ in just about every other <a href="/read/design">design</a> choice.
+          Tiny bundles means pages load faster, and there's less pressure to split code.
         </p>
       </div>
     </div>
@@ -34,7 +34,7 @@ template: main-no-toc.html
       <div class="info__block">
         <h2>Fast</h2>
         <p>
-          It is also among the fastest frameworks out there.
+          It is also one of the fastest frameworks out there.
         </p>
         <div class="stats_div">
           <header>Results for create 10,000 rows test</header>
@@ -44,11 +44,11 @@ template: main-no-toc.html
           </footer>
         </div>
         <p>
-          Raw speed is nice but isn't enough to prevent (or fix) the serious <a href="/read/performance">performance</a> issues which hit frontend.
+          But real performance is about fixing bottlenecks, which requires a level of control few frameworks give you.
         </p>
       </div>
     </div>
-  </div>  
+  </div>
 </div>
 
 
@@ -58,22 +58,15 @@ template: main-no-toc.html
       <div class="info__block">
         <h2>Simple</h2>
         <p>
-          RedRunner <i>generates</i> very simple DOM code from the directives in your HTML.
-          You can tell <i>exactly</i> how and when each individual DOM element will be updated.
-        </p>
-        <p>
-          Simple code = less confusion = quicker development.
+          RedRunner has no engine. Its syntax compiles to direct DOM updates, meaning you can take as much control as you like without breaking anything.
         </p>
       </div>
     </div>
     <div class="pure-u-1 pure-u-sm-1-2">
       <div class="info__block">
-      <h2>Powerful</h2>
+      <h2>Productive</h2>
         <p>
-          Most frameworks give you little control over how they update the DOM, which makes fixing performance issues very difficult.
-        </p>
-        <p>
-          How RedRunner solves this will blow you socks off.
+          The simple architecture, lack of magic, and the ability to seamlessly take control of internal operations make for an incredibly productive workflow.
         </p>
       </div>
     </div>
