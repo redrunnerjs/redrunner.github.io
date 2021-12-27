@@ -236,7 +236,7 @@ h3 code {
 }
 
 .logo {
-  margin: 50px auto 50px;
+  margin: 50px auto 10px;
   display: table;
   text-align: center;
 }
@@ -279,6 +279,18 @@ h3 code {
   margin-top: 1em;
 }
 
+.call-to-action {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.call-to-action a {
+  color: #fff;
+  font-weight: bold;
+  padding: 7px 25px;
+  background-color: #2b2b2b;
+  border-radius: 7px;
+}
 
 .about {
   margin-left: -15px;
@@ -310,18 +322,26 @@ h3 code {
   margin-left: 0.5em;
 }
 
+i {
+  font-style: italic;
+  font-weight: bold;
+}
+
 .pure-menu-heading {
   font-weight: bold;
   font-size: 17px;
 }
+
 .pure-menu-horizontal .pure-menu-list {
 	display: block;
 	display: flex;
 	justify-content: center;
 }
+
 .toclink {
   font-weight: normal;
 }
+
 /* This hidden pseudo-element acts as padding for in-page anchors */
 .toclink:before {
 	content: " ";

@@ -1,6 +1,6 @@
 # RedRunner Website
 
-This repository contains the files for the RedRunner Website hosted at https://redrunner.js.org
+This repository contains the files for the RedRunner website hosted at https://redrunner.js.org
 
 ### Tooling
 

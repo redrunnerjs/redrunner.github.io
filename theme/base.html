@@ -20,6 +20,11 @@
 
   {% for path in config.extra_css %}<link rel="stylesheet" href="{{ path }}">{% endfor %}
 
+  <script type="text/javascript">var base_url = '{{ base_url }}';</script>
+  {% for path in extra_javascript %}
+    <script src="{{ path }}"></script>
+  {% endfor %}
+
   {% if config.google_analytics %}
     <script>
     (function(i, s, o, g, r, a, m) {
@@ -71,10 +76,7 @@
   </div>
 
   <script src="//cdn.jsdelivr.net/g/jquery@3.2.1,highlight.js@9.11.0"></script>
-  <script>hljs.initHighlightingOnLoad();</script>
-  {% for path in extra_javascript %}<script src="{{ path }}"></script>{% endfor %}
-  <script>var base_url = '{{ base_url }}';</script>
-  <script data-main="{{ base_url }}/mkdocs/js/search.js" src="{{ base_url }}/mkdocs/js/require.js"></script>
+  <script type="text/javascript">hljs.initHighlightingOnLoad();</script>
 </body>
 
 </html>

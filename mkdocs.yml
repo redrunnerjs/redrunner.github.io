@@ -16,6 +16,7 @@ extra_css:
   - /static/css/index.css
 extra_javascript:
   - static/js/index.js
+  - 
 
 extra:
   lib_url: https://github.com/andyhasit/redrunner
@@ -27,11 +28,13 @@ markdown_extensions:
         anchorlink: true
 
 nav:
-  - Home: index
+  - Home: /
   - Read:
     - Design: /design
     - Performance: /performance
     - Readability: /readability
     - Size: /size
   - Docs:
+    - Tour: /tour
+    - Overview: /overview 
     - Tutorial: /tutorial

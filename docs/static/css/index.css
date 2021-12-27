@@ -32,6 +32,10 @@
   font-size: smaller;
 }
 
+.stats_tour {
+  max-width: 400px;
+}
+
 .stats-table td {
   padding: 0 6px;
   text-align: right;
