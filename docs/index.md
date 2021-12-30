@@ -75,6 +75,9 @@ template: main-no-toc.html
 
 <div class="call-to-action">
   <a href="/tour">Take the tour</a>
+  <p>
+    (Includes a walrus, and bubbles)
+  </p>
 </div>
 
 

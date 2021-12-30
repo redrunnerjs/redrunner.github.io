@@ -12,8 +12,6 @@ theme:
     name: null
     custom_dir: theme
 
-extra_css:
-  - /static/css/index.css
 extra_javascript:
   - static/js/index.js
   - 
