@@ -7,14 +7,12 @@ copyright: "MIT license"
 
 edit_uri: edit/dev/docs/
 
-
 theme:
     name: null
     custom_dir: theme
 
 extra_javascript:
   - static/js/index.js
-  - 
 
 extra:
   lib_url: https://github.com/andyhasit/redrunner
@@ -27,7 +25,4 @@ markdown_extensions:
 
 nav:
   - Home: /
-  - Docs:
-    - Tour: /tour
-    - Overview: /overview 
-    - Tutorial: /tutorial
+  - Tour: /tour

@@ -570,64 +570,144 @@ We only use template strings to allow it to be multi-line.
 
 ## The Walrus
 
-We'll get onto repeat elements and nested components shortly.
+RedRunner has a very special directive affectionately called the walrus, for obvious reasons:
 
-The most versatile directive is `:watch` which takes either 2 or 3 slots.
+```html
+<div :="..count|n<5|visible"></div>
+```
+
+> This is legal HTML, as `:` is just the name of the attribute.
+
+The walrus has three slots:
+
+1. Return the value to track.
+2. Return the value to use.
+3. Wrapper method to pass that value to.
+
+So the example above:
+
+* We track `count` on the props. 
+* If that has changed since last update, we passes the new value to a function generated from the middle slot which returns true if it is less than 5.
+* We pass that result to the method `visible` on the wrapper, which will show or hide the div accordingly.
+
+#### Why is it special?
+
+The walrus can do almost everything that other directives do, albeit in a more verbose manner. 
+
+The following do exactly the same:
+
+```html
+<div :="..count|n<=5|visible"></div>
+<div :visible="..count|n<=5"></div>
+<div :hide="..count|n>5"></div>
+```
+
+The same is true of inline directives. These two do exactly the same, and even compile to identical code: 
+
+```html
+<div :="..count|'Clicked ' + n + 'times'|text"></div>
+<div>Clicked {..count} times</div>
+```
+
+It's not so much that the walrus can do anything, but rather that other directives are just more concise expressions of specific use cases of the walrus.
+
+However, the walrus comes into its own when you omit the third slot.
 
 #### Two slot mode
 
-In this mode the first slot returns a value to track, and the second one is function to call if the tracked value has changed:
+Without a third slot pointing to a wrapper method, there is nowhere to send the return value of the second slot. So essentially the slots mean:
+
+1. Return the value to track.
+2. Code to run if the tracked value has changed.
+
+This lets you do silly things like this:
 
 
 ```html
-<div :watch="..count|alert('Count changed!')"></div>
+<div :="..count|console.log('Count is now: ' + n)"></div>
 ```
 
-Although you can use this to you react to data changes, the more typical use case is modifying the element by passing the wrapper:
+But the really useful thing you can do is pass the wrapper to a callback:
 
 ```javascript
-<div :watch="{..name|updateDiv(w)}"></div>
-
 const Counter = Component.__ex__(html`
   <div>
 	<button :onClick="increment(c, p)">+</button>
-    <div :watch="..count|updateLabel(w, n)"></div>
+    <div :="..count|updateLabel(w, n)"></div>
   </div>
 `)
 
 const increment = (c, p) => {p.count += 1; c.update()}
-const updateLabel = (w, n) => w.text(`Clicked ${n} times`).att('color', n >= 3 ? 'red' : 'black')
+const updateLabel = (w, n) => w.text(`Clicked ${n} times`)
 ```
 
-Note how we can chain calls to wrapper methods.
+We are updating the element in a function outside of the component. This may seem like a very odd thing to do, but it comes in handy in some situations.
 
-Here is an alternative way to achieve this:
+For example, if we have multiple dynamic properties in an element, the HTML can get pretty messy:
 
 ```javascript
-<div :watch="{..name|updateDiv(w)}"></div>
-
 const Counter = Component.__ex__(html`
   <div>
 	<button :onClick="increment(c, p)">+</button>
-    <div color="..count|getColor(n)">
+    <div 
+        style="font-size: {..count}em;"
+        color="{..count|getColor(n)}"
+        :visible="..count|n <= 5"
+      >
       Clicked {..count} times
     </div>
   </div>
 `)
 
 const increment = (c, p) => {p.count += 1; c.update()}
-const getColor = (w, n) => n >= 3 ? 'red' : 'black'
+const getColor = (n) => n >= 3 ? 'red' : 'black'
 ```
 
-It's up to you which approach you prefer, you can safely combine approaches:
+We can tidy the HTML by moving all that mess to a walrus callback:
 
 ```javascript
-<div :watch="{..name|updateDiv(w)}"></div>
-
 const Counter = Component.__ex__(html`
   <div>
 	<button :onClick="increment(c, p)">+</button>
-    <div :watch="..count|updateLabel(w, n)">
+    <div :="..count|updateLabel(w, n)"></div>
+  </div>
+`)
+
+const increment = (c, p) => {p.count += 1; c.update()}
+const updateLabel = (w, n) => {
+  w.text(`Clicked ${n} times`)
+   .visible(n <= 5)
+   .atts({
+      color: n >= 3 ? 'red' : 'black',
+      style: `font-size: ${n}em;`
+   })
+}
+```
+
+Note how we can chain wrapper methods calls.
+
+There are other advantages to:
+
+* It is easier to share and reuse functionality
+* You can avoid repeating operations
+
+#### Direct DOM manipulation
+
+This may feel very close to direct DOM manipulation, and it is, but:
+
+* It is triggered by a data change.
+* It runs in an isolated scope.
+* We have clean syntax.
+
+So all the reasons to avoid direct DOM manipulation are mitigated.
+
+Note that you can safely manipulate an element both ways at the same time:
+
+```javascript
+const Counter = Component.__ex__(html`
+  <div>
+	<button :onClick="increment(c, p)">+</button>
+    <div :="..count|updateLabel(w, n)">
       Clicked {..count} times
     </div>
   </div>
@@ -637,7 +717,242 @@ const increment = (c, p) => {p.count += 1; c.update()}
 const updateLabel = (w, n) => w.att('color', n >= 3 ? 'red' : 'black')
 ```
 
+If you don't like this, you can stick to the declarative approach (which does the exact same thing under the hood).
+
+## Misc
+
+## Nesting
+
+## Repeat items
+
+To repeat items under an element, you must tell it which component to use, and then specify the items:
+
+```html
+<div :use="ToDoComponent" :items="todos"></div>
+```
+
+Note that RedRunner uses `!==` to check if a tracked value has changed, so if `todos` is the same array instance as it was last `update`, then it won't update the DOM because `todos === todos` even if the array's contents have changed.
+
+This lets you avoid rebuilding DOM when you don't need to, but it can catch you out. The simplest way to ensure it always updates is this:
+
+```html
+<div :items="*|todos"></div>
+```
+
+Alternatively, just make sure the tracked variable is a different array instance:
+
+```html
+<div :items="rebuildTodos()"></div>
+<div :items="todos.splice()"></div>
+<div :items="todos.map(getId)|todos"></div>
+```
+
+## Performance
+
+Here is a page which displays a list of smoothies and their ingredients, which pagination to show just 50 smoothies at a time:
+
+```javascript
+const Ingredient = View.__ex__(html`
+  <span>{p}</span>
+`)
+
+const Smoothie = View.__ex__(html`
+  <div>
+    <div>{..name}</div>
+	<div :items="..ingredients|Ingredient"></div>
+  </div>
+`)
+
+class SmoothieList = extends View{
+  __html__ = html`
+    <div>
+      <button :onClick=".next()">Next 50</button>
+      <div :items=".getSmoothies()|Smoothie"></div>
+    </div>
+  `
+  init() {
+    this.page = 1
+  }
+  getSmoothies() {
+    const start = this.page * 50
+    const end = start + 50
+    return this.props.slice(start, end)
+  }
+  next() {
+    this.page += 1
+    this.update()
+  }
+)
+
+mount('smoothie-list', SmoothieList, [
+   {name: 'Bananango', ingredients: ['banana', 'mango']},
+   {name: 'Rouge', ingredients: ['blueberry', 'cherry', 'redcurrant']},
+   ...
+])
+```
+
+Let's imagine that:
+
+* `Smoothie` and `Ingredient` have far more complex DOM than depicted.
+* There are thousands of smoothies.
+
+When the component first loads, we to create the DOM for the first 50 smoothies plus their ingredients, which is expensive but can't really be avoided.
+
+However, when we jump to the next 50 smoothies, we can reuse the components (including their DOM) and update their content, which is *significantly* faster than creating fresh DOM.
+
+All we need is a pool of reusable child components, and this is exactly what the `:use` directive does.
+
+The pool of child components is attached to that wrapper, and whenever we pass an array to the `items` method it fetches.
+
+
+
+#### Sequential cache
+
+The `:items` directive has two slots:
+
+1. Array of items
+2. Child component definition
+
+It creates a pool child components and attaches that to the wrapper. Whenever we pass an array of items to the `items` method the wrapper will draw from that pool, creating new instances as necessary.
+
+So in our example the pool of `Smoothie` components will always have exactly 50 components which get reused at every update.
+
+#### Shared cache
+
+But each `Smoothie` component has its own pool of `Ingredient` components, which makes things interesting.
+
+If the row 1 on page 1 has 3 ingredients, but row 1 on page 2 has 6 ingredients, then when we load page 2 the component on row 1 will need to create those missing 3 `Ingredient` components.
+
+So even if the total number of `Ingredient` components is similar across pages, we may end up having to create a load because they are not evenly distributed and each `Smoothie` component has its own pool.
+
+The obvious solution is to create a shared pool. 
+
+```javascript
+const Smoothie = View.__ex__(html`
+  <div>
+    <div>{..name}</div>
+	<div :items="..ingredients" :pool="c.parent.ingredientPool"></div>
+  </div>
+`)
+
+class SmoothieList extends View {
+  __html__ = `
+    <div :use="Smoothie" :items=".smoothies"></div>
+  `
+  init() {
+    this.smoothies = this.props
+    this.ingredientPool = this.pool(Ingredient)
+  }
+}
+```
+
+This way if page 1 has 150 ingredients, but page 2 has 170, we'd only need to create an additional 20.
+
+
+
+
+
+
+
+
+
+In some cases you don't want to rebuild the child elements, but do want to update 
+
+```javascript
+<div :apply=""></div>
+
+w.apply(items, foo)
+w.apply(items, foo)
+
+w.apply(items.map((x,i)=>i), foo)
+w.apply(50, foo)
+Array(5).fill().map((x,i)=>i)
+```
+
+
+
+
+
+
+
+
+
+```javascript
+//Ideas
+
+const SmoothieList = View.__ex__(html`
+  <use:Smoothie :items="p" />
+`)
+
+const SmoothieList = View.__ex__(html`
+  <div :use="Smoothie" :items="p"></div>
+`)
+
+const SmoothieList = View.__ex__(html`
+  <div :items="p" :pool="myPool" ></div>
+`)
+
+const SmoothieList = View.__ex__(html`
+  <use:Smoothie :items="p" :pool="myPool" />
+`)
+```
+
+
+
+
+
+
+
+One solution is to store `Smoothie` components in a cache, and reuse those every time we update the `SmoothieList` component.
+
+So long as the cache isn't shared with other components, and the child components don't store state, this works fine.
+
+This is exactly what the `:items` directive does: it creates a cache which yields instances of the child component from objects.
+
+The `Smoothie` components do the same with nested `Ingredient` components, but 
+
+#### Keyed cache
+
+
+
+
+
+
+
+ 
+
+
+
+The `:items` directive creates a hidden cache of child components, which in this case would yield a `Smoothie` component for every smoothie object.
+
+On first pass each one of those needs to be instantiated and the DOM created.
+
+When the `SmoothieList` component is updated, the cache is reset, and when we start requesting `Smoothie` components it reuses existing ones until it runs out, and which point it creates more.
+
+Each `Smoothie` component creates a cache for nested `Ingredient` components.
+
+#### Keyed cache
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #### Three slot mode
+
+* Set html
+* Set attributes
+
+
 
 In this mode the slots mean the following:
 
@@ -818,4 +1133,4 @@ mount('main', UserName, user)
 setTimeout(() => user.name = 'B', 2000)
 ```
 
-### 
+By the way, adding new directives doesn't bloat the bundle. We could add 20 different spellings of `:visible` or `:hidden`.
