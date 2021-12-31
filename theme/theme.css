@@ -407,8 +407,14 @@ table th {
   border-radius: 100px;
 }
 
+.sub-text {
+  font-style: italic;
+  text-align: center;
+  margin: 15px auto;
+}
+
 .call-to-action {
-  margin-top: 40px;
+  margin-top: 45px;
   text-align: center;
 }
 
@@ -421,8 +427,13 @@ table th {
 }
 
 .call-to-action p {
-  font-size: 1.1em;
+  background-color: #c0c0c0;
+  border-radius: 7px;
+  font-size: 0.8em;
   font-style: italic;
+  max-width: 300px;
+  text-align: center;
+  margin: 50px auto 20px;
   padding: 15px;
 }
 
@@ -521,6 +532,11 @@ i {
 
   .info__block h2 {
     text-align: center;
+  }
+
+
+  .sub-text {
+    margin: 40px auto;
   }
 
   .toc {

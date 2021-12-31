@@ -1,34 +1,32 @@
 ## Overview
 
-RedRunner is a JavaScript framework you can use in place of React, Angular, Vue etc to build:
-
-* Reactive web pages
-* Mobile apps
-* Embedded applications
+RedRunner is a JavaScript framework you can use in place of React, Angular, Vue etc to build websites, mobile apps, PWAs etc...
 
 ### Why should I use it?
 
 #### Performance
 
-RedRunner is lightning fast, but real world performance is mostly about avoiding lags in complex views.
+RedRunner compiles your code into tiny bundles which update the DOM a lot more efficiently than popular frameworks like React.
 
-That often requires granular control, and RedRunner makes than easier and cleaner than any other framework.
+But real world performance is really about fixing slow pages (which affect all frameworks) and that's where RedRunner really shines.
 
 #### Productivity
 
-RedRunner is very mechanical, with no magic, so you'll spend at lot less time being confused about behaviour than other frameworks. 
+Reactive frameworks speed up development, but also slow us down with:
 
-It also has a built-in help system.
+* Confusing behaviour.
+* Performance issues.
 
-#### Size
+Instead of using a smart runtime engine, RedRunner intelligently generates dumb code, which has two benefits:
 
-Bundle size directly affects page loading times, particularly on low end devices.
+1. You can clearly see how, when and why each update happens.
+2. You can easily tweak any aspect of that to fix performance issues.
 
-RedRunner's basic "Hello World" app bundle is roughly 10% the size of a React or Angular equivalent.
+
 
 ## Installation
 
-RedRunner is not a library you can just load into a page like jQuery. It compiles code using a special Babel plugin, so you need a tool such as [webpack](https://webpack.js.org/), [rollup](https://rollupjs.org/guide/en/) or [parcel](https://parceljs.org/).
+RedRunner isn't a library you can just load into a page with a `<script>` tag. It compiles code using a special Babel plugin, so you need a tool such as [webpack](https://webpack.js.org/), [rollup](https://rollupjs.org/guide/en/) or [parcel](https://parceljs.org/).
 
 If you want to code along (recommended) simply clone the demo project:
 
@@ -263,44 +261,38 @@ import {Component, mount} from 'redrunner'
 const Counter = Component.__ex__(html`
   <div>
     <button :onClick="increment(p)">+</button>
-    <div>Clicked {..count} times</div>
+    <span>Clicked {..count} times</span>
   </div>
 `)
 
 const CounterColumn = Component.__ex__(html`
-  <div style="float: left">
+  <div>
     <div :use="Counter" :items="p.slice()"></div>
     <div :show="total(p) > 10">
-      You've reached the limit!
+      You've reached the limit.
     </div>
-    <div>Average: {total(p)| n / p.length}</div>
   </div>
 `)
 
 const CounterContainer = Component.__ex__(html`
-  <div>
-	 <use:CounterColumn :props="..left">
-	 <use:CounterColumn :props="..right">
-	 <button :onClick="addCounters(c, p)">Add Counters</button>
+  <div class="click-counter">
+    <button :onClick="addCounters(c, p)">Add Counters</button>
+	  <use:CounterColumn :props="..left">
+	  <use:CounterColumn :props="..right">
   </div>
 `)
 
 const increment = (p) => {p.count += 1; root.update()}
 const total = (ctrs) => ctrs.reduce((t, p) => p.count + t, 0)
-const addCounters = (c) => {
+const addCounters = (c, p) => {
   p.left.push({count: 0})
   p.right.push({count: 0})
   c.update()
 }
-const root = mount('click-counter-div', CounterContainer, {
+const root = mount('router', CounterContainer, {
   left: [], right: [],
 })
 ```
-
-Note how we can:
-
-* Define components as classes if we prefer.
-* Pass arrays, objects or primitives as props.
 
 Of course you can do a lot more, including:
 
@@ -311,7 +303,9 @@ Of course you can do a lot more, including:
 * Selective updates
 * Control DOM reuse for nested components
 
-Before we get into all that juicy stuff, let's take a minute to explore how RedRunner works internally.
+But before we go into  
+
+efore we get into all that juicy stuff, let's take a minute to explore how RedRunner works internally.
 
 ## Internals
 

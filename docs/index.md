@@ -8,7 +8,7 @@ template: main-no-toc.html
   -->
   <div class="logo__text">
     <div class="logo__name">RedRunner</div>
-    <div class="logo__slogan">A tiny framework with legs</div>
+    <div class="logo__slogan">A tiny framework with legs!</div>
   </div>
 </div>
 
@@ -66,56 +66,30 @@ template: main-no-toc.html
           Most of the time RedRunner feels like any other declarative framework, 
           but its unique design also gives you full control when you need it.
         </p>
-        All of these are genuinely trivial:
+        All of these are quite trivial:
         <ul>
           <li>Selective or partial component updates.</li>
           <li>Fine control of element updates.</li>
           <li>Optimising how DOM is recycled.</li>
         </ul>
         <p>
-          This means you can fix performance issues in minutes rather than days, and without making a mess of your code.
+          This lets you fix performance issues in minutes rather than days, without making a mess of your code.
         </p>
-        <!--
-          
-          ,
-          meaning you can fix performance issues in minutes rather than days, and
-          even match vanilla JS speeds, without making a mess of your code.
-          
-        </p>
-
-          s internal design means you can easily tweak or alter any operation:
-        vMost of the time RedRunner feels like any other declarative framework, 
-          but underneath the surface it works very differently.
-         RedRunner converts your code into a very crude DOM updating engine.
-        <p>
-          One benefit of this is that errors hit you during development.
-        </p>
-          However it works very differently to React, Vue etc. 
-        (some might say it is more a code generator than a framework) 
-        This lets you do several things that aren't possible in a normal frameworks.
-          Though it feels like a declarative framework, RedRunner is really a highly optimised code generator.
-          And this lets you do a ton of things that are not possible in other frameworks.
-        <p>
-          And this lets you do a ton of things that are not possible in other frameworks.
-        </p>
-          RedRunner converts declarative code into optimised instructions during compilation.
-          The declarative code is translated into highly optimised DOM code during compilation.
-        <p>
-          RedRunner has no engine. Its syntax compiles to direct DOM updates, meaning you can take as much control as you like without breaking anything.
-        </p>
-        <p>
-          The simple architecture, lack of magic, and the ability to seamlessly take control of internal operations make for an incredibly productive workflow.
-        </p>
-        -->
       </div>
     </div>
   </div>
 </div>
 
+
+<div class="sub-text">
+  Bonus features include a <a href="/tour#the-walrus">walrus</a>, and <a href="/tour#bubbles">bubbles</a>.
+</div>
+
 <div class="call-to-action">
   <a href="/tour">Take the tour</a>
   <p>
-    (Includes a walrus, and bubbles)
+    RedRunner is used on a couple of live sites, 
+    but is still in active development and should not be considered production ready.
   </p>
 </div>
 
