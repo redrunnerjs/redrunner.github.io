@@ -19,7 +19,10 @@
           {% if nav_item.title == 'Home' %}
             <li class="pure-menu-item pure-menu-item--home">
               <a href="{{ nav_item.url }}">
-                <img class="logo__image" src="/static/img/avatar.svg" alt="RedRunner" style="width:40px" />
+                <!--
+                  <img class="logo__image" src="/static/img/avatar.svg" alt="RedRunner" style="width:40px" />
+                -->
+                <span class="nav-home">RedRunner</span>
               </a>
             </li>
           {% else %}
@@ -32,9 +35,11 @@
       <li class="pure-menu-item">
         <a class="pure-menu-link" href="{{ config.extra.lib_url }}">GitHub</a>
       </li>
-      <li class="pure-menu-item pure-menu-item--search">
-        <label class="pure-menu-link search-toggle" for="search-state">Search</label>
-      </li>
+      <!--
+        <li class="pure-menu-item pure-menu-item--search">
+          <label class="pure-menu-link search-toggle" for="search-state">Search</label>
+        </li>
+      -->
     </ul>
   </div>
 </div>

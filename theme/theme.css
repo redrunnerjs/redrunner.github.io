@@ -4,11 +4,11 @@ html, button, input, select, textarea, .pure-g [class *= "pure-u"] {
 
 /* Stops content being hidden behing the sticky header */
 html {
-  scroll-padding-top: 60px; 
+  scroll-padding-top: 65px; 
 }
 
 h1, h2, h3, h4, h5, h6 {
-  margin-top: 0.8em;
+  margin-top: 0.8emRedRunner;
   font-weight: 900;
   padding-top: 0.5em;
 }
@@ -140,6 +140,11 @@ table th {
   transform: translate(0, 0);
 }
 
+.nav-home {
+  font-size: 1.8em;
+  font-weight: bold;
+}
+
 .nav-mobile {
   position: fixed;
   top: 0;
@@ -154,21 +159,19 @@ table th {
 .menu-toggle {
   position: absolute;
   top: 8px;
-  right: 25px;
-  background-image: url(/static/img/avatar.svg);
-  background-repeat: no-repeat;
-  background-position: center left;
-  background-size: contain;
+  right: 20px;
   height: 35px;
   line-height: 35px;
+  font-weight: bold;
 }
 
 .toc-toggle {
   position: absolute;
   top: 8px;
-  left: 25px;
+  left: 20px;
   line-height: 35px;
   text-align: right;
+  font-weight: bold;
 }
 
 .hamburger {
@@ -262,7 +265,7 @@ table th {
 	padding-bottom: 10px;
 }
 .main__footer {
-  margin: 100px 0;
+  margin: 15px 0;
   text-align: center;
   padding-left: 15px;
   padding-right: 15px;
@@ -309,6 +312,8 @@ table th {
   font-size: 6rem;
   font-family: 'Hind', sans-serif;
   font-weight: 700;
+  color: #ca3328;
+  line-height: 1em;
   /*
   color: #c50000;
   font-style: italic;
@@ -317,7 +322,7 @@ table th {
 }
 
 .logo__slogan {
-  font-size: 2rem;
+  font-size: 1.8rem;
   font-weight: 600;
 }
 
@@ -326,6 +331,10 @@ table th {
   margin-right: -15px;
 }
 
+.info img {
+  border-radius: 7px;
+  width: 100%;
+}
 
 .info__block {
   padding-left: 15px;
@@ -333,6 +342,8 @@ table th {
 }
 
 .info__block h2 {
+
+  text-align: center;
   margin-top: 1em;
   font-size: 1.7em;
 }
@@ -404,8 +415,8 @@ table th {
 .call-to-action a {
   color: #fff;
   font-weight: bold;
-  padding: 7px 25px;
-  background-color: #2b2b2b;
+  padding: 12px 25px 8px 25px;
+  background-color: #ca3328;
   border-radius: 7px;
 }
 
@@ -508,6 +519,10 @@ i {
     border-bottom: 1px solid #eee;
   }
 
+  .info__block h2 {
+    text-align: center;
+  }
+
   .toc {
     height: calc(100% - 61px);
     overflow: auto;
@@ -586,7 +601,6 @@ i {
   .main__content {
     max-width: 800px;
     margin: 40px auto;
-	  padding-left: 50px;
   }
 
   .logo__logo {

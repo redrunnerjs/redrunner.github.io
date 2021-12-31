@@ -30,11 +30,7 @@ RedRunner's basic "Hello World" app bundle is roughly 10% the size of a React or
 
 RedRunner is not a library you can just load into a page like jQuery. It compiles code using a special Babel plugin, so you need a tool such as [webpack](https://webpack.js.org/), [rollup](https://rollupjs.org/guide/en/) or [parcel](https://parceljs.org/).
 
-If you want to code along (recommended) simply to clone the demo project.
-
-### Clone the demo project
-
-Clone the repo:
+If you want to code along (recommended) simply clone the demo project:
 
 ```bash
 git clone git@github.com:redrunnerjs/demo.git
@@ -53,6 +49,8 @@ npm start
 ```
 
 You can now access the site at [https://localhost:8000](https://localhost:8000) with hot-reload enabled.
+
+The rest of this section covers installation details, so you can [skip ahead](#first-example) if you like.
 
 ### Manual Installation
 
@@ -104,13 +102,9 @@ The remove `@babel/preset-env` from the presets (but add it back for production)
 
 I couldn't get source maps to work satisfactorily, but haven't tried in a while.
 
-##### Rollup
+## First example
 
-I haven't tried.
-
-## Click Counter
-
-Below is a simple click counter. You should find something similar in the demo project.
+Here is a simple click counter similar to the one in the demo project.
 
 ```javascript
 import {Component, mount} from 'redrunner'
@@ -132,11 +126,11 @@ mount('click-counter-div', ClickCounter, {count: 0})
 
 > The `html` right before the string tells editors and highlighters to treat the text as HTML. It has nothing to do with RedRunner.
 
-What happened in the code:
+Here's what the code does:
 
-1. We defined a component called `Counter`
-2. We defined a callback for our button.
-3. We mounted an instance of `Counter` to a div and passed `{count: 0}` as props.
+1. Defined a component called `Counter`
+2. Defines a callback for our button.
+3. Mounts an instance of `Counter` to a div and passes `{count: 0}` as props.
 
 All we need in our HTML file is an element with the expected `id`:
 
@@ -154,44 +148,64 @@ The code looks similar to React:
 3. We mount components onto elements in the DOM (from which point on they control it's inner DOM).
 4. We explicitly tell components when to update (no magic data binding).
 
-Like React you can nest components, and updates cascade down the tree so it all feels reactive even though it's not.
+Like React you can nest components, and updates cascade down the tree, so it all feels reactive even though it's not.
 
-Where it differs is that rather than JSX which generates virtual DOM, our HTML is just a string with **directives** which get converted to optimised instructions during **compilation**. 
+But instead of JSX and virtual DOM, the HTML in our component is a plain string with **directives**.
 
 ### Directives
 
-Directives are special instructions you place in a component's HTML string. They come in two kinds:
+Directives are instructions in a component's HTML string which get converted into instructions during **compilation**. 
+
+They come in two kinds:
 
 #### Inline directives
 
-You place these in within tags or inside attribute values:
+You place these in HTML text:
 
 ```html
 <div>Clicked {..count} times</span>
 <div class="{..style}"></div>
 ```
 
-They work as you'd expect.
+And they do exactly what you'd expect.
 
 #### Attribute directives
 
-You write these as HTML attributes:
+You write these as tag attributes:
 
 ```html
 <button :onClick="increment(p, c)">+</button>
 ```
 
-These let you do all the clever things like conditional hiding, repeating elements etc... You can also define your own.
+And they do all the clever things like conditional hiding, repeating elements etc... 
 
 ### Syntax
 
-RedRunner hardly has any syntax. The dots just save typing:
+RedRunner hardly has any syntax. The two dots you see here mean that field is on the props:
 
-* `{count}` means variable `count` in global/module scope.
-* `{.count}` means `this.count`, where `this` is the component.
-* `{..count}` means `this.props.count`.
+```html
+<div>Clicked {..count} times</span>
+```
 
-And `p` and `c` are variables (which refer to the `props` and `component` respectively) which are available to use.
+A single dot means it is on the component:
+
+```html
+<div>Clicked {.count} times</span>
+```
+
+An no dots means we look in global/module scope.
+
+```html
+<div>Clicked {count} times</span>
+```
+
+The `p` and `c` you see here are variables which are available to use:
+
+```html
+<button :onClick="increment(p, c)">+</button>
+```
+
+The refer to the `props` and `component` respectively.
 
 Here's the component re-written to use a global `count` variable instead:
 
@@ -211,17 +225,17 @@ const increment = (c) => {count += 1; c.update()}
 mount('click-counter-div', ClickCounter)
 ```
 
-It's all really simple, and there's a built-in cheat sheet in case you forget.
+It's all really simple, and there's a built-in help system in case you forget.
 
-## Cheat sheet
+## Help
 
-Just add a `?` anywhere inside an html tag:
+Just place a `?` anywhere inside an tag in a component's HTML:
 
 ```html
 <button ? :onClick="increment(c)">+</button>
 ```
 
-And the cheat sheet will appear in the browser, which will show:
+And the help page will appear in the browser, with:
 
 * The syntax rules.
 * The list variables available to callbacks.
@@ -235,60 +249,52 @@ You can define as many custom directives as you like without affecting bundle si
 
 Moving that workload from run time to compile time is one of the reasons RedRunner bundles are so lean and fast.
 
-## Showcase
+## Basic features
 
-Here is a small showcase of some basic features, including:
+Here is a showcase of basic features, including:
 
-* Single nested components with `<use: >`
-* Repeating nested components using `:items`
-* Conditionally displaying with `:show`
+* Single nested components.
+* Repeat nested components.
+* Conditionally visibility.
 
 ```javascript
 import {Component, mount} from 'redrunner'
 
-class Counter extends Component {
-  __html__ = html`
-    <div>
-      <button :onClick="increment()">+</button>
-      <div>Clicked {..count} times</div>
-    </div>
-  `
-  increment() {
-    this.props.count += 1; 
-    this.update()
-  }
-}
-
-class CounterColumn extends Component {
-  __html__ = html`
-    <div style="float: left">
-      <div :items="p|Counter"></div>
-	  <div :show="total(p) > 10">
-        You've reached the limit!
-      </div>
-      <div>Average: {total(p)| n / p.length}</div>
-    </div>
-  `
-}
-
-const CounterContainer = Component.__ex__(html`
+const Counter = Component.__ex__(html`
   <div>
-	 <use:CounterColumn :props="leftCounters">
-	 <use:CounterColumn :props="rightCounters">
-	 <button :onClick="addCounters(c)">Add Counters</button>
+    <button :onClick="increment(p)">+</button>
+    <div>Clicked {..count} times</div>
   </div>
 `)
 
-const leftCounters = Array.from([4, 2], x => {count: x})
-const rightCounters = Array.from([0, 2, 3], x => {count: x})
-const addCounters = c) => {
-  leftCounters.push({count: x})
-  rightCounters.push({count: x})
+const CounterColumn = Component.__ex__(html`
+  <div style="float: left">
+    <div :use="Counter" :items="p.slice()"></div>
+    <div :show="total(p) > 10">
+      You've reached the limit!
+    </div>
+    <div>Average: {total(p)| n / p.length}</div>
+  </div>
+`)
+
+const CounterContainer = Component.__ex__(html`
+  <div>
+	 <use:CounterColumn :props="..left">
+	 <use:CounterColumn :props="..right">
+	 <button :onClick="addCounters(c, p)">Add Counters</button>
+  </div>
+`)
+
+const increment = (p) => {p.count += 1; root.update()}
+const total = (ctrs) => ctrs.reduce((t, p) => p.count + t, 0)
+const addCounters = (c) => {
+  p.left.push({count: 0})
+  p.right.push({count: 0})
   c.update()
 }
-const total(counters) => counters.reduce((t, p) => p.count + t, 0)
-      
-mount('click-counter-div', CounterContainer)
+const root = mount('click-counter-div', CounterContainer, {
+  left: [], right: [],
+})
 ```
 
 Note how we can:
@@ -743,7 +749,7 @@ Alternatively, just make sure the tracked variable is a different array instance
 
 ```html
 <div :items="rebuildTodos()"></div>
-<div :items="todos.splice()"></div>
+<div :items="todos.slice()"></div>
 <div :items="todos.map(getId)|todos"></div>
 ```
 
