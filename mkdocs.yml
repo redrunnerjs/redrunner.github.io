@@ -21,8 +21,9 @@ extra:
 
 markdown_extensions:
     - toc:
-        anchorlink: true
-
+        #anchorlink: true
+        #baselevel: 0
+        toc_depth: 2-5
 nav:
   - Home: /
   - Tour: /tour
