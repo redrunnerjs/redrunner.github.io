@@ -1,1136 +1,686 @@
+# Tour
+
+This page introduces RedRunner and acts as a mini-tutorial. For full usage details see the [reference](/reference).
+
 ## Overview
 
-RedRunner is a JavaScript framework you can use in place of React, Angular, Vue etc to build websites, mobile apps, PWAs etc...
+#### What is RedRunner?
 
-### Why should I use it?
+RedRunner is a front end JavaScript framework (like React, Angular or Vue) which you can use to build reactive web pages, mobile apps, PWAs etc...
 
-#### Performance
+#### What makes it special?
 
-RedRunner compiles your code into tiny bundles which update the DOM a lot more efficiently than popular frameworks like React.
+##### Tiny bundles
 
-But real world performance is really about fixing slow pages (which affect all frameworks) and that's where RedRunner really shines.
+Bundles are often 10% of an equivalent app in React or Angular, which results in *noticeably* faster page loading.
 
-#### Productivity
+That's because parsing JavaScript takes time, regardless of whether it is cached or minified.
 
-Reactive frameworks speed up development, but also slow us down with:
+##### Ease of development
 
-* Confusing behaviour.
-* Performance issues.
+RedRunner is actually more of a cookie cutter than a framework.
 
-Instead of using a smart runtime engine, RedRunner intelligently generates dumb code, which has two benefits:
+This keeps things really simple, so you don't waste hours debugging weird behaviour.
 
-1. You can clearly see how, when and why each update happens.
-2. You can easily tweak any aspect of that to fix performance issues.
+##### Real world performance
 
+RedRunner scores very high on the [official js framework benchmark](https://krausest.github.io/js-framework-benchmark/current.html). 
 
+But no matter how fast a framework is, large complex DOM trees will slow things right down.
 
-## Installation
+Fixing that usually involves tweaks such as:
 
-RedRunner isn't a library you can just load into a page with a `<script>` tag. It compiles code using a special Babel plugin, so you need a tool such as [webpack](https://webpack.js.org/), [rollup](https://rollupjs.org/guide/en/) or [parcel](https://parceljs.org/).
+* Partial or targeted updates
+* Moving DOM elements (aka reparenting)
+* Optimising DOM reuse
 
-If you want to code along (recommended) simply clone the demo project:
+Most frameworks make such tweaks really difficult, leaving you to pick between poor performance or messy hacks in your code.
+
+RedRunner make this so clean and easy you can fix slow pages in minutes, not days.
+
+> *If you're confused by any of the above concepts, I highly recommend reading [this post on DOM](https://codeburst.io/taming-huge-collections-of-dom-nodes-bebafdba332).*
+
+## Walk through
+
+If you want to code along (which I recommend) just clone the demo project:
 
 ```bash
 git clone git@github.com:redrunnerjs/demo.git
 ```
 
-Install packages:
+Install dependencies:
 
-```
+```bash
 npm i
 ```
 
-Then run the dev server:
+And run the empty project:
 
-```
-npm start
-```
-
-You can now access the site at [https://localhost:8000](https://localhost:8000) with hot-reload enabled.
-
-The rest of this section covers installation details, so you can [skip ahead](#first-example) if you like.
-
-### Manual Installation
-
-You need two packages:
-
-```
-npm i -D redrunner babel-plugin-redrunner
+```bash
+npm run empty
 ```
 
-When upgrading, make sure the minor versions match.
+Your page should now be at [http://0.0.0.0:3000](http://0.0.0.0:3000) with hot reload enabled.
 
-#### Babel
+#### The document
 
-Your babel configuration should look like this:
+Here's all the HTML you need to get started:
 
-```json
-{
-  "presets": ["@babel/preset-env"],
-  "plugins": [
-      "babel-plugin-redrunner",
-      "@babel/plugin-proposal-class-properties"
-  ]
-}
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>RedRunner Demo</title>
+  </head>
+  <body>
+    <div id="main"></div>
+    <script src="main.js"></script>
+  </body>
+</html>
 ```
 
-Note that the order of plugins is important.
+You can call the div and file whatever you like, it doesn't have to match.
 
-#### Source Maps
+We won't touch the HTML file beyond this, everything is done in ES6 modules.
 
-This gets a bit tricky as RedRunner generates code, but you want source maps to point to your original files.
+#### Components
 
-##### WebPack
+Components control parts of the DOM, and can be nested to form a tree, just like React.
 
-FIirst set devtools to `eval-cheap-source-map`:
-
-```javascript
-{
-  devtool: 'eval-cheap-source-map'
-  entry: '...',
-  devServer: {...},
-  output: {...},
-  module: {...}
-}
-```
-
-The remove `@babel/preset-env` from the presets (but add it back for production).
-
-##### Parcel
-
-I couldn't get source maps to work satisfactorily, but haven't tried in a while.
-
-## First example
-
-Here is a simple click counter similar to the one in the demo project.
+Modify the code in **src/empty/main.js** of the demo project as follows:
 
 ```javascript
 import {Component, mount} from 'redrunner'
 
 const Counter = Component.__ex__(html`
   <div>
-	<button :onClick="increment(p, c)">+</button>
-    <div>Clicked {..count} times</div>
+	<button>+</button>
+    <span>Clicked 0 times</span>
   </div>
 `)
 
-const increment = (props, component) => {
-  props.count += 1
-  component.update()
-}
-
-mount('click-counter-div', ClickCounter, {count: 0})
+mount('main', Counter)
 ```
 
-> The `html` right before the string tells editors and highlighters to treat the text as HTML. It has nothing to do with RedRunner.
+The page should display something like this:
 
-Here's what the code does:
+<div>
+  <button>+</button>
+  <span>Clicked 0 times</span>
+</div>
+It doesn't do anything yet.
 
-1. Defined a component called `Counter`
-2. Defines a callback for our button.
-3. Mounts an instance of `Counter` to a div and passes `{count: 0}` as props.
+#### The HTML string
 
-All we need in our HTML file is an element with the expected `id`:
+The HTML string is just a string, not JSX.
 
-```html
-<div id="click-counter-div"></div>
-```
+That `html` right before the string  has nothing to do with RedRunner. It just helps editors to treat the string as HTML for syntax highlighting and code completion purposes:
 
-Here are equivalents in [React](https://codepen.io/trnkat96/pen/KqPOoX), [Vue](https://paulund.co.uk/vuejs-click-counter) and [Angular](https://codepen.io/NickCelaya/pen/qXjPbB) for comparison.
+<img src="/static/img/vs-code.png">
 
-### Notes
+You may need a plugin for this to work, such [this one](https://marketplace.visualstudio.com/items?itemName=bierner.lit-html) for vs code, which even lets other plugins see that as HTML.
 
-The code looks similar to React: 
+The string gets processed by a babel plugin during compilation which looks for **directives** of which there are two types:
 
-1. We define components in ES6 modules (rather than annotating existing HTML like Angular or Vue).
-3. We mount components onto elements in the DOM (from which point on they control it's inner DOM).
-4. We explicitly tell components when to update (no magic data binding).
+* **inline** directives
+* **attribute** directives
 
-Like React you can nest components, and updates cascade down the tree, so it all feels reactive even though it's not.
-
-But instead of JSX and virtual DOM, the HTML in our component is a plain string with **directives**.
-
-### Directives
-
-Directives are instructions in a component's HTML string which get converted into instructions during **compilation**. 
-
-They come in two kinds:
+> Note that babel only sees source code, so this must be a string declaration with no concatenation or interpolation.
 
 #### Inline directives
 
-You place these in HTML text:
+These have `{braces}` and inject a value in the DOM. They can be placed inside a node's text:
 
 ```html
-<div>Clicked {..count} times</span>
-<div class="{..style}"></div>
+<span>Clicked {count} times</span>
 ```
 
-And they do exactly what you'd expect.
+Or attribute text:
+
+```html
+<button class="btn-{getStyle()}"></button>
+```
+
+They can references values or call functions.
+
+Let's make our component display a value:
+
+```javascript
+const Counter = Component.__ex__(html`
+  <div>
+	<button>+</button>
+    <span>Clicked {count} times</span>
+  </div>
+`)
+
+let count = 1
+mount('main', Counter)
+```
+
+The page should now display:
+
+<div>
+  <button>+</button>
+  <span>Clicked 1 times</span>
+</div>
+
+#### Update
+
+Components don't automatically update when data changes.
+
+```javascript
+let count = 0
+mount('main', Counter)
+// This does nothing
+count += 1
+```
+
+You must explicitly tell it to `update`:
+
+```javascript
+let count = 0
+const root = mount('main', Counter)
+count += 1
+root.update()
+```
+
+The component simply remembers the value of count and if differs from the last call to `update`, then it updates the DOM.
+
+This keeps things simple, and minimises DOM operations.
 
 #### Attribute directives
 
-You write these as tag attributes:
+These are written as valid HTML attributes:
 
 ```html
-<button :onClick="increment(p, c)">+</button>
+<div :show="isUserActive()"></div>
 ```
 
-And they do all the clever things like conditional hiding, repeating elements etc... 
-
-### Syntax
-
-RedRunner hardly has any syntax. The two dots you see here mean that field is on the props:
+There are dozens, and they do all the clever stuff, like nesting, repeating, visibility, events etc. But you really only need to remember one:
 
 ```html
-<div>Clicked {..count} times</span>
+<div :help></div>
 ```
 
-A single dot means it is on the component:
+This will load the offline help system in your browser, which lists all the directives and how to use them, including any custom ones you define.
+
+#### Slots
+
+Some directives accept multiple slots, which we separate with the `|` symbol:
 
 ```html
-<div>Clicked {.count} times</span>
+<button :on="click|alert('hello')"></button>
 ```
 
-An no dots means we look in global/module scope.
+Inline directives optionally accept a second slot:
 
 ```html
-<div>Clicked {count} times</span>
+<span>Clicked {count|n*2} times</span>
 ```
 
-The `p` and `c` you see here are variables which are available to use:
+Which modifies the value before it is inserted into the DOM (we'll explain that mysterious `n` later).
+
+#### Compilation
+
+A babel plugin strips the directives from the HTML string and convert them into code.
+
+This has several advantages over traditional frameworks:
+
+1. The job of translating high-level declarations into low-level DOM operations is done long before the page is loaded.
+2. The code which handles all that isn't included in the bundle.
+
+It also means we can define as many directives or permutations as we like without affecting bundle size.
+
+Directives can also be as slow at parsing their slots they like, because all that matters is the generated code.
+
+#### Events
+
+If a directive starts with `:on` it treats the rest of the name as the event to handle.
+
+So these do exactly the same thing:
 
 ```html
-<button :onClick="increment(p, c)">+</button>
+<button :on="click|alert('hello')"></button>
+<button :onClick="alert('hello')"></button>
 ```
 
-The refer to the `props` and `component` respectively.
-
-Here's the component re-written to use a global `count` variable instead:
+Let's add a click event to our counter:
 
 ```javascript
-import {Component, mount} from 'redrunner'
+const Counter = Component.__ex__(html`
+  <div>
+	<button :onClick="increment()">+</button>
+    <span>Clicked {count} times</span>
+  </div>
+`)
+let count = 0
+const root = mount('main', Counter)
+const increment = () => {
+  count += 1
+  root.update()
+}
+```
 
+You should now have a functioning click counter!
+
+We could have done this in a normal click event handler, so let's see why this one is different.
+
+#### Ready vars
+
+That `increment()` in our directive is just text which gets copied as code into a function during compilation:
+
+```javascript
+function btnClick(w, e, p, c) {
+  increment(c)   
+}
+```
+
+That function is called internally, and its parameters naturally become variables available to our code.
+
+Let's use `c` which refers to the component:
+
+```javascript
 const Counter = Component.__ex__(html`
   <div>
 	<button :onClick="increment(c)">+</button>
-    <div>Clicked {count} times</div>
+    <span>Clicked {count} times</span>
   </div>
 `)
 
 let count = 0
-const increment = (c) => {count += 1; c.update()}
-
-mount('click-counter-div', ClickCounter)
-```
-
-It's all really simple, and there's a built-in help system in case you forget.
-
-## Help
-
-Just place a `?` anywhere inside an tag in a component's HTML:
-
-```html
-<button ? :onClick="increment(c)">+</button>
-```
-
-And the help page will appear in the browser, with:
-
-* The syntax rules.
-* The list variables available to callbacks.
-* The list of attribute directives and how to use them.
-
-It even covers custom directives which you defined.
-
-#### Good to know
-
-You can define as many custom directives as you like without affecting bundle size. Directives are parsed and converted during compilation, and only the generated code ends up in the bundle. 
-
-Moving that workload from run time to compile time is one of the reasons RedRunner bundles are so lean and fast.
-
-## Basic features
-
-Here is a showcase of basic features, including:
-
-* Single nested components.
-* Repeat nested components.
-* Conditionally visibility.
-
-```javascript
-import {Component, mount} from 'redrunner'
-
-const Counter = Component.__ex__(html`
-  <div>
-    <button :onClick="increment(p)">+</button>
-    <span>Clicked {..count} times</span>
-  </div>
-`)
-
-const CounterColumn = Component.__ex__(html`
-  <div>
-    <div :use="Counter" :items="p.slice()"></div>
-    <div :show="total(p) > 10">
-      You've reached the limit.
-    </div>
-  </div>
-`)
-
-const CounterContainer = Component.__ex__(html`
-  <div class="click-counter">
-    <button :onClick="addCounters(c, p)">Add Counters</button>
-	  <use:CounterColumn :props="..left">
-	  <use:CounterColumn :props="..right">
-  </div>
-`)
-
-const increment = (p) => {p.count += 1; root.update()}
-const total = (ctrs) => ctrs.reduce((t, p) => p.count + t, 0)
-const addCounters = (c, p) => {
-  p.left.push({count: 0})
-  p.right.push({count: 0})
+mount('main', Counter)
+const increment = (c) => {
+  count += 1
   c.update()
 }
-const root = mount('router', CounterContainer, {
-  left: [], right: [],
-})
 ```
 
-Of course you can do a lot more, including:
+Things are starting to look cleaner.
 
-* Inheritance
-* Composition using stubs
-* Bubbles
-* Switch
-* Selective updates
-* Control DOM reuse for nested components
+The other variables available to event callbacks are:
 
-But before we go into  
+* `w`  the wrapper (we'll cover this later)
+* `e`  the original event.
+* `p`  the props.
 
-efore we get into all that juicy stuff, let's take a minute to explore how RedRunner works internally.
+#### Props
 
-## Internals
+Props are data we pass to components.
 
-There are 3 pieces: **wrappers**, **trackers** and **components**.
+Let's create an object to keep track of the count and pass that to our component instead of a module scoped variable:
 
-### Wrappers
+```javascript
+const Counter = Component.__ex__(html`
+  <div>
+	<button :onClick="increment(c, p)">+</button>
+    <span>Clicked {p.count} times</span>
+  </div>
+`)
 
-Wrapper are simple objects which wrap a DOM element and expose methods to manipulate it:
+const increment = (c, p) => {
+  p.count += 1
+  c.update()
+}
+mount('main', Counter, {count: 0})
+```
+
+Now we can have multiple counters with their own data.
+
+Notice how can choose which ready vars to use and in what order.
+
+We also changed `{count}` to `{p.count}` which works because that is also just text which gets copied into a function:
+
+```javascript
+function readValue(w, p, c) {
+  return p.count
+}
+```
+
+The component feeds the return value of that function to a wrapper.
+
+#### Wrappers
+
+Wrapper are objects which wrap a DOM element and expose methods to manipulate it. 
+
+You don't create them yourself, but let's do it here just to see what they look like:
 
 ```javascript
 import {Wrapper} from 'redrunner'
 
-const el = document.getElementById('click-counter-div')
+const el = document.getElementById('main')
 const w = new Wrapper(el)
 w.text('hello')
 w.css('danger')
-w.att('color', 'blue')
+w.style('font-size', '48px')
+w.on('click', () => alert('Yo'))
 ```
 
-You don't normally create wrappers manually, we're just showing how it works.
+All DOM updates happen by calling methods on wrappers, and directives mostly generate code which does exactly that.
 
-### Trackers
-
-A tracker is an object which tracks a value, and has two functions:
-
-* One to read the value.
-* One to call if the value has changed.
-
-The following directive:
+So a directive like this:
 
 ```html
-<span>Clicked {..count} times</span>
+<span>Clicked {p.count} times</span>
 ```
 
-Would result in a tracker which looks like this:
+Gets compiled into something like this:
 
 ```javascript
-{
-  value: 0,
-  getNew: (c) => c.props.count,
-  callback: (c, n) => c.wrappers[0].text(`Clicked ${n} times`)
-}
+w.text('Clicked ' + n + ' times')
 ```
 
-Where `c` is the component, and `n` is the new value. Note this is an approximation, the real code is different.
+Before we explore the fun things you do by accessing wrappers yourself, lets see how repeat items are handled. 
 
-### Components
+#### Repeat items
 
-When we instantiate a component, it:
-
-1. Creates its initial DOM.
-2. Creates a wrapper for each dynamic element.
-
-When you `update` a component, this is roughly what happens:
+Let's create a component which displays a task List:
 
 ```javascript
-function update() {
-  const c = this
-  trackers.forEach(tracker => {
-    const n = tracker.getNew(c)
-    if (n !== tracker.value) {
-      tracker.callback(c, n)
-      tracker.value = n
-    }
-  })
-  this.nestedComponents.forEach(child => child.update())
-}
-```
-
-And that, in a nutshell, is how RedRunner updates the DOM.
-
-Everything (text, styles, visibility, repeated elements etc) is handled the same way: by calling a method on a wrapper if a tracked value has changed.
-
-### Advantages
-
-#### Predictability
-
-There is no data binding, observers or other magic reactivity happening.
-
-You can look at your code and confidently tell exactly how and when each element is being updated.
-
-#### Speed
-
-Updates are very fast as:
-
-* It only touches DOM elements that actually need changed.
-* It access those elements via pointers, so there is no DOM traversal.
-* It only rebuilds content strings if the watched value has changed.
-
-#### Control
-
-The wrapper system lets us safely update some elements in a component without affecting others.
-
-Being able to apply selective updates cleanly lets you crawl out of many performance jams.
-
-## Slots
-
-You can transform a value before it is inserted:
-
-```html
-<div>Hello {..name|n.toUpperCase()}</div>
-```
-
-This might look similar to **filters** in Vue or Angular, but what is actually happening is quite different.
-
-A directive is made of **slots** separated by the `|` symbol. Inline directives allow either one or two slots:
-
-* Slot 1 returns a value to track.
-* Slot 2 returns a value to insert.
-
-The text in each slot is inserted into functions in the generated code during compilation. 
-
-Here are the two functions that would be generated from that last directive:
-
-```javascript
-// Function which returns the value to track
-function(w, p, c) {
-  return p.count;
-}
-
-// Function which returns the value to insert
-function(w, p, c, n, o) {
-  return n.toUpperCase();
-}
-```
-
-The variables available in slots are simply the function's parameters, which differ according to the situation:
-
-
-| Var  | Meaning   | Availability         |
-| ---- | --------- | -------------------- |
-| p    | Props     | All slots            |
-| c    | Component | All slots            |
-| w    | Wrapper   | All slots            |
-| n    | New value | Transform slot only  |
-| o    | Old value | Transform slot only  |
-| e    | Event     | Event directive only |
-
-You can use these variables however you like so long as it results in valid JavaScript when inserted into the generated function.
-
-All of the following are valid:
-
-```html
-<div>{..name|'Hello' + n}</div>
-<div>{..name|c.formatName(n)}</div>
-<div>{..name|p.firstName}</div>
-<div>{p.name|foo(c, p, w)}</div>
-<div>{c.props.name|p.bar(o, n)}</div>
-<div>{getName(p)|n.toUpperCase()}</div>
-```
-
-At this point you could argue that RedRunner is more of a glorified code generator than a truly declarative framework.
-
-That may be so, but it doesn't really matter as:
-
-* You use it exactly as if it were one.
-* You reap the same benefits.
-* You get much smaller bundles.
-* You get far better performance.
-* You have a lot more control.
-
-The rest of this section contains notes on slots, but you can [skip ahead](#watch) if you're in a hurry.
-
-#### No eval
-
-There is no nasty `eval` at play here, we just use the text to generate code at compile time.
-
-#### Single slot
-
-If the second slot is missing, RedRunner assumes you just want the new value, so these two are equivalent:
-
-```html
-<div>Hello {..name}</div>
-<div>Hello {..name|n}</div>
-```
-
-#### Always and once
-
-You can tell a slot to always update:
-
-```html
-<div>Hello {*|..name}</div>
-```
-
-Or to only update once:
-
-```html
-<div>Hello {|..name}</div>
-```
-
-These are for fine tuning performance, so don't worry about these for now.
-
-#### Dot notation
-
-RedRunner only detects dot notation at the start of a slot. So these two work:
-
-```html
-<div>Hello {..name}</div>
-<div>Hello {*|..name}</div>
-```
-
-But this doesn't:
-
-```html
-<div>Hello {*|capitalize(..name)}</div>
-```
-
-You would need to do one of the following:
-
-```html
-<div>Hello {*|capitalize(p.name)}</div>
-<div>Hello {*|capitalize(c.props.name)}</div>
-<div>Hello {..name|capitalize(n)}</div>
-```
-
-#### It's just a tracker
-
-You don't actually have to use the value from the first slot in the second slot. You could use the first slot solely to decide whether to update the contents:
-
-```javascript
-const Paragraph = Component.__ex__(html`
-  <div>{p.revision|rebuildParagraph(p.text)}</div>
+const TaskItem = Component.__ex__(html`
+  <li>{p.text}</li>
 `)
 
-const paragraph = {
-  revision: 12,
-  text: "Lorem ipsum dolor sit amet \n consectetur adipiscing elit"
-}
-const rebuildParagraph = (text) => text.replaceAll('\n', '<br>')
-```
-
-This comes in useful later.
-
-#### Beware ES6
-
-The text inside slots gets copied *directly* into the generated ES5 code, and therefore does not undergo transformation from ES6 to ES5.
-
-So you cannot do this:
-
-```html
-<div>Hello {..name|n + o ? ` (was ${o})` : ''}</div>
-```
-
-Because that is an ES6 string literal which older browsers will not recognise.
-
-Simply move the code out to a function in your module, which will be converted:
-
-```html
-<div>Name: {..name|printName(n, o)}</div>
-```
-
-On that note, a component's `html` string is processed by babel, which reads code but doesn't interpret it, so this kind of thing won't work:
-
-```javascript
-const UserName = Component.__ex__(html`
-	<div>${foo()}</div>
-`)
-const UserName = Component.__ex__("<div>" + foo() + "</div>")
-```
-
-We only use template strings to allow it to be multi-line.
-
-## The Walrus
-
-RedRunner has a very special directive affectionately called the walrus, for obvious reasons:
-
-```html
-<div :="..count|n<5|visible"></div>
-```
-
-> This is legal HTML, as `:` is just the name of the attribute.
-
-The walrus has three slots:
-
-1. Return the value to track.
-2. Return the value to use.
-3. Wrapper method to pass that value to.
-
-So the example above:
-
-* We track `count` on the props. 
-* If that has changed since last update, we passes the new value to a function generated from the middle slot which returns true if it is less than 5.
-* We pass that result to the method `visible` on the wrapper, which will show or hide the div accordingly.
-
-#### Why is it special?
-
-The walrus can do almost everything that other directives do, albeit in a more verbose manner. 
-
-The following do exactly the same:
-
-```html
-<div :="..count|n<=5|visible"></div>
-<div :visible="..count|n<=5"></div>
-<div :hide="..count|n>5"></div>
-```
-
-The same is true of inline directives. These two do exactly the same, and even compile to identical code: 
-
-```html
-<div :="..count|'Clicked ' + n + 'times'|text"></div>
-<div>Clicked {..count} times</div>
-```
-
-It's not so much that the walrus can do anything, but rather that other directives are just more concise expressions of specific use cases of the walrus.
-
-However, the walrus comes into its own when you omit the third slot.
-
-#### Two slot mode
-
-Without a third slot pointing to a wrapper method, there is nowhere to send the return value of the second slot. So essentially the slots mean:
-
-1. Return the value to track.
-2. Code to run if the tracked value has changed.
-
-This lets you do silly things like this:
-
-
-```html
-<div :="..count|console.log('Count is now: ' + n)"></div>
-```
-
-But the really useful thing you can do is pass the wrapper to a callback:
-
-```javascript
-const Counter = Component.__ex__(html`
+const TaskList = Component.__ex__(html`
   <div>
-	<button :onClick="increment(c, p)">+</button>
-    <div :="..count|updateLabel(w, n)"></div>
+    <h4>
+      Showing {todo(p).length} of {p.length} items.
+    </h4>
+    <ul :use="TodoItem" :items="todo(p)"></ul>
   </div>
 `)
 
-const increment = (c, p) => {p.count += 1; c.update()}
-const updateLabel = (w, n) => w.text(`Clicked ${n} times`)
-```
+const todo = (p) => p.filter(i => !i.done)
 
-We are updating the element in a function outside of the component. This may seem like a very odd thing to do, but it comes in handy in some situations.
-
-For example, if we have multiple dynamic properties in an element, the HTML can get pretty messy:
-
-```javascript
-const Counter = Component.__ex__(html`
-  <div>
-	<button :onClick="increment(c, p)">+</button>
-    <div 
-        style="font-size: {..count}em;"
-        color="{..count|getColor(n)}"
-        :visible="..count|n <= 5"
-      >
-      Clicked {..count} times
-    </div>
-  </div>
-`)
-
-const increment = (c, p) => {p.count += 1; c.update()}
-const getColor = (n) => n >= 3 ? 'red' : 'black'
-```
-
-We can tidy the HTML by moving all that mess to a walrus callback:
-
-```javascript
-const Counter = Component.__ex__(html`
-  <div>
-	<button :onClick="increment(c, p)">+</button>
-    <div :="..count|updateLabel(w, n)"></div>
-  </div>
-`)
-
-const increment = (c, p) => {p.count += 1; c.update()}
-const updateLabel = (w, n) => {
-  w.text(`Clicked ${n} times`)
-   .visible(n <= 5)
-   .atts({
-      color: n >= 3 ? 'red' : 'black',
-      style: `font-size: ${n}em;`
-   })
-}
-```
-
-Note how we can chain wrapper methods calls.
-
-There are other advantages to:
-
-* It is easier to share and reuse functionality
-* You can avoid repeating operations
-
-#### Direct DOM manipulation
-
-This may feel very close to direct DOM manipulation, and it is, but:
-
-* It is triggered by a data change.
-* It runs in an isolated scope.
-* We have clean syntax.
-
-So all the reasons to avoid direct DOM manipulation are mitigated.
-
-Note that you can safely manipulate an element both ways at the same time:
-
-```javascript
-const Counter = Component.__ex__(html`
-  <div>
-	<button :onClick="increment(c, p)">+</button>
-    <div :="..count|updateLabel(w, n)">
-      Clicked {..count} times
-    </div>
-  </div>
-`)
-
-const increment = (c, p) => {p.count += 1; c.update()}
-const updateLabel = (w, n) => w.att('color', n >= 3 ? 'red' : 'black')
-```
-
-If you don't like this, you can stick to the declarative approach (which does the exact same thing under the hood).
-
-## Misc
-
-## Nesting
-
-## Repeat items
-
-To repeat items under an element, you must tell it which component to use, and then specify the items:
-
-```html
-<div :use="ToDoComponent" :items="todos"></div>
-```
-
-Note that RedRunner uses `!==` to check if a tracked value has changed, so if `todos` is the same array instance as it was last `update`, then it won't update the DOM because `todos === todos` even if the array's contents have changed.
-
-This lets you avoid rebuilding DOM when you don't need to, but it can catch you out. The simplest way to ensure it always updates is this:
-
-```html
-<div :items="*|todos"></div>
-```
-
-Alternatively, just make sure the tracked variable is a different array instance:
-
-```html
-<div :items="rebuildTodos()"></div>
-<div :items="todos.slice()"></div>
-<div :items="todos.map(getId)|todos"></div>
-```
-
-## Performance
-
-Here is a page which displays a list of smoothies and their ingredients, which pagination to show just 50 smoothies at a time:
-
-```javascript
-const Ingredient = View.__ex__(html`
-  <span>{p}</span>
-`)
-
-const Smoothie = View.__ex__(html`
-  <div>
-    <div>{..name}</div>
-	<div :items="..ingredients|Ingredient"></div>
-  </div>
-`)
-
-class SmoothieList = extends View{
-  __html__ = html`
-    <div>
-      <button :onClick=".next()">Next 50</button>
-      <div :items=".getSmoothies()|Smoothie"></div>
-    </div>
-  `
-  init() {
-    this.page = 1
-  }
-  getSmoothies() {
-    const start = this.page * 50
-    const end = start + 50
-    return this.props.slice(start, end)
-  }
-  next() {
-    this.page += 1
-    this.update()
-  }
-)
-
-mount('smoothie-list', SmoothieList, [
-   {name: 'Bananango', ingredients: ['banana', 'mango']},
-   {name: 'Rouge', ingredients: ['blueberry', 'cherry', 'redcurrant']},
-   ...
+mount('main', TaskList, [
+  {done: true, text: 'Wake up'},
+  {done: false, text: 'Learn RedRunner'},
+  {done: false, text: 'Profit'},
 ])
 ```
 
-Let's imagine that:
+This will display 2 of the 3 tasks.
 
-* `Smoothie` and `Ingredient` have far more complex DOM than depicted.
-* There are thousands of smoothies.
+The `:use` directive specifies the component class to use. The `:items` directive supplies the array of props to map to components.
 
-When the component first loads, we to create the DOM for the first 50 smoothies plus their ingredients, which is expensive but can't really be avoided.
-
-However, when we jump to the next 50 smoothies, we can reuse the components (including their DOM) and update their content, which is *significantly* faster than creating fresh DOM.
-
-All we need is a pool of reusable child components, and this is exactly what the `:use` directive does.
-
-The pool of child components is attached to that wrapper, and whenever we pass an array to the `items` method it fetches.
-
-
-
-#### Sequential cache
-
-The `:items` directive has two slots:
-
-1. Array of items
-2. Child component definition
-
-It creates a pool child components and attaches that to the wrapper. Whenever we pass an array of items to the `items` method the wrapper will draw from that pool, creating new instances as necessary.
-
-So in our example the pool of `Smoothie` components will always have exactly 50 components which get reused at every update.
-
-#### Shared cache
-
-But each `Smoothie` component has its own pool of `Ingredient` components, which makes things interesting.
-
-If the row 1 on page 1 has 3 ingredients, but row 1 on page 2 has 6 ingredients, then when we load page 2 the component on row 1 will need to create those missing 3 `Ingredient` components.
-
-So even if the total number of `Ingredient` components is similar across pages, we may end up having to create a load because they are not evenly distributed and each `Smoothie` component has its own pool.
-
-The obvious solution is to create a shared pool. 
+The generated code works by calling the method `items` on the wrapper:
 
 ```javascript
-const Smoothie = View.__ex__(html`
-  <div>
-    <div>{..name}</div>
-	<div :items="..ingredients" :pool="c.parent.ingredientPool"></div>
+w.items(n)
+```
+
+Which rebuilds the list of `li` elements.
+
+#### References
+
+A wrapper stores a *reference* to its DOM element, so it doesn't care *where* it is.
+
+Let's mess with our DOM a bit:
+
+```javascript
+const TaskList = Component.__ex__(html`
+  <div id="div">
+    <h4>
+      Showing {todo(p).length} of {p.length} items.
+    </h4>
+    <ul id="ul" :use="TodoItem" :items="todo(p)"></ul>
   </div>
 `)
 
-class SmoothieList extends View {
-  __html__ = `
-    <div :use="Smoothie" :items=".smoothies"></div>
-  `
-  init() {
-    this.smoothies = this.props
-    this.ingredientPool = this.pool(Ingredient)
-  }
-}
+const todo = (p) => p.filter(i => !i.done)
+const tasks = [
+  {done: true, text: 'Wake up'},
+  {done: false, text: 'Learn RedRunner'},
+  {done: false, text: 'Profit'},
+]
+const root = mount('main', TaskList, tasks)
+const div = document.getElementById('div')
+const ul = document.getElementById('ul')
+
+// This adds a HR after the UL
+div.appendChild(document.createElement('hr'))
+// This moves the UL outside of the DIV
+document.body.appendChild(ul)
+
+tasks.push({done: false, text: 'Wow'})
+root.update()
 ```
 
-This way if page 1 has 150 ingredients, but page 2 has 170, we'd only need to create an additional 20.
+> The dynamic elements are still updated even when moved outside of the components div.
 
+Of course you wouldn't do this, we're just showing how different it is to virtual DOM.
 
+This system has several advantages:
 
+* Non-dynamic elements are ignored
+* There is no slow DOM traversal
+* Reference access is lightening fast
+* You can update individual elements without breaking things
 
+That last point enables partial updates, which is just one of the performance tweaks we'll look at in the next section.
 
+But first let's tie up all the loose ends.
 
+#### The walrus
 
+The walrus `:=` is a very special directive because it ties up all the loose ends. 
 
-
-In some cases you don't want to rebuild the child elements, but do want to update 
-
-```javascript
-<div :apply=""></div>
-
-w.apply(items, foo)
-w.apply(items, foo)
-
-w.apply(items.map((x,i)=>i), foo)
-w.apply(50, foo)
-Array(5).fill().map((x,i)=>i)
-```
-
-
-
-
-
-
-
-
-
-```javascript
-//Ideas
-
-const SmoothieList = View.__ex__(html`
-  <use:Smoothie :items="p" />
-`)
-
-const SmoothieList = View.__ex__(html`
-  <div :use="Smoothie" :items="p"></div>
-`)
-
-const SmoothieList = View.__ex__(html`
-  <div :items="p" :pool="myPool" ></div>
-`)
-
-const SmoothieList = View.__ex__(html`
-  <use:Smoothie :items="p" :pool="myPool" />
-`)
-```
-
-
-
-
-
-
-
-One solution is to store `Smoothie` components in a cache, and reuse those every time we update the `SmoothieList` component.
-
-So long as the cache isn't shared with other components, and the child components don't store state, this works fine.
-
-This is exactly what the `:items` directive does: it creates a cache which yields instances of the child component from objects.
-
-The `Smoothie` components do the same with nested `Ingredient` components, but 
-
-#### Keyed cache
-
-
-
-
-
-
-
- 
-
-
-
-The `:items` directive creates a hidden cache of child components, which in this case would yield a `Smoothie` component for every smoothie object.
-
-On first pass each one of those needs to be instantiated and the DOM created.
-
-When the `SmoothieList` component is updated, the cache is reset, and when we start requesting `Smoothie` components it reuses existing ones until it runs out, and which point it creates more.
-
-Each `Smoothie` component creates a cache for nested `Ingredient` components.
-
-#### Keyed cache
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#### Three slot mode
-
-* Set html
-* Set attributes
-
-
-
-In this mode the slots mean the following:
-
-1. returns a value to track.
-2. returns a value to insert.
-3. Name of a wrapper method
-
-For example:
-
+It has three slots, which you can think of as:
 
 ```html
-<div :watch="{..name|n.toUpperCase()|text}"></div>
+<span :="read|transform|wrapperMethodName"></span>
 ```
 
-Which is the exact same as this:
+> Fun fact: that is still valid HTML.
 
+When we tell the component to `update` it will:
 
-```html
-<div>{..name|n.toUpperCase()}</div>
-```
+1. Evaluate the 1st slot to obtain the new value.
+2. Compare that to the value saved during previous update.
+3. If the value has changed:
+   1. Evaluate the 2nd slot.
+   2. Call the method named in the 3rd slot on the wrapper for this element, passing the value returned by the 2nd slot.
 
-You can leave the second slot empty:
-
-```html
-<div :watch="{..name||text}"></div>
-```
-
-Which would be the same as this:
-
-
-```html
-<div>{..name}</div>
-```
-
-It doesn't make much sense using this to set the text. It is occasionally useful for methods like `html`, `value`, `checked` etc...
-
-The `@` notation lets you call the `att` method, which sets an element's attribute, and requires the name as first parameter:
-
-```html
-<div :watch="..height|n + 'px'|@height"></div>
-```
-
-So the above calls `wrapper.att('height', '100px')` to result in this:
-
-```html
-<div height="100px"></div>
-```
-
-Of course you could do it like this too:
-
-```html
-<div height="{..height}px"></div>
-```
-
-
-
-
-
-
-
-
-
-```
-<div :items=".props|Child|id"></div>
-
-slots
-
-
-```
-
-
-
-
-
-Note how we control the element's color manually, while its text is controlled by the declarative code in the component.
-
-This example may strike you as being odd, given that:
-
-1. You can do that with plain JavaScript or jQuery.
-2. The whole point of a declarative framework is to avoid doing that kind of thing.
-
-Let's dig into why this is relevant.
-
-## Declaring war
-
-```
-sequence
-	point about performance
-	point about productivity
-	direct DOM
-	reactivity
-	
-```
-
-
-
-
-
-Declarative programming saves time by hiding implementation details and making your code more readable. We'd rather work with this than the mess of code required to make it work:
-
-```html
-<div>Hello {..name}</div>
-```
-
-But there
-
-1. Some simple things become more complicated.
-2. Performance can be an issue.
-
-A classic example is wanting to update just one column in a table:
-
-```html
-<table>
-    <tr>
-        <td>name</td>
-        <td>email</td>
-        <td>online</td>  <!--  Just update this -->
-    </tr>
-    <tr>
-        <td>name</td>
-        <td>email</td>
-        <td>online</td>  <!--  Just update this -->
-    </tr>
-    <tr>
-        <td>name</td>
-        <td>email</td>
-        <td>online</td>  <!--  Just update this -->
-    </tr>
-</table>
-```
-
-With jQuery that's an easy task. But with a declarative framework you 
-
-
-
-
-
-
-
-You can easily access wrappers to update specific elements independently of one another. 
-
-Let's use the `:el` directive which names the wrapper so we can access it directly:
+Let's try it on our click counter:
 
 ```javascript
 const Counter = Component.__ex__(html`
   <div>
-	<button :onClick="increment(c)">+</button>
-    <div :el="label"></div>
+	<button :onClick="increment(c, p)">+</button>
+    <span :="p.count|foo(n)|text"></span>
   </div>
 `)
+const increment = (c, p) => {
+  p.count += 1
+  c.update()
+}
+const foo = (n) => `Clicked ${n} times`
+mount('main', Counter, {count: 0})
+```
 
-let count = 0
-const increment = (c) => {
-  count += 1;
-  c.el.label.text(`Clicked ${count} times`)
+This does exactly the same as the previous implementation:
+
+```html
+<span>Clicked {p.count} times</span>
+```
+
+In fact the generated code is equivalent.
+
+In both cases `foo(n)` only gets called if `p.count` has changed since last update, which saves rebuilding the string if there's no need to.
+
+#### Walruses in disguise
+
+Most directives are essentially a walrus with a preset wrapper method.
+
+Both of these end up calling `w.disabled(n>5)` if `p.count` has changed:
+
+```html
+<button :="p.count|n>5|disabled">+</button>
+<button :disabled="p.count|n>5">+</button>
+```
+
+Inline directives infer the method from their location. So these are equivalent:
+
+```html
+<span>{p.count}</span>
+<span :="p.count||text"></span>
+```
+
+> If you omit the 2nd slot, it uses the value from the 1st slot unmodified.
+
+As are these two:
+
+```html
+<span class="{spanStyle()}"></span>
+<span :="spanStyle()||@class"></span>
+```
+
+> The @ symbol calls the `att` method on the wrapper, passing the next bit as first parameter, so becomes `w.att('class', n)`
+
+You could also just use the `:css` directive:
+
+```html
+<span :css="spanStyle()"></span>
+```
+
+All of these accept two slots, but the second one is optional, and relates to control.
+
+#### Control
+
+Both of these behave the same:
+
+```html
+<button :disabled="p.count|n>5">+</button>
+<button :disabled="p.count>5">+</button>
+```
+
+But they operate differently internally:
+
+```html
+<button :="p.count|n>5|disabled">+</button>
+<button :="p.count>5||disabled">+</button>
+```
+
+In the first form, `p.count>5` is only evaluated if `p.count` has changed.
+
+That make virtually no difference in this case, but for more expensive operations it can be a game changer.
+
+Let's say we display paragraphs from lines. The first pass might look like this:
+
+```javascript
+const Paragraph = Component.__ex__(html`
+  <p :html="rebuild(p.lines)"></p>
+`)
+const paragraph = {
+  lines: [
+    "Lorem ipsum dolor sit amet",
+    "consectetur adipiscing elit"
+  ]
+}
+const rebuild = (lines) => lines.join('<br>')
+mount('main', Paragraph, paragraph)
+```
+
+This calls `rebuild` at every `update` which could causes a performance issue, even if the DOM isn't updated.
+
+One strategy is to use a counter which you increment whether the lines are changed. You could then use it like this:
+
+```javascript
+const Paragraph = Component.__ex__(html`
+  <p :html="p.changes|rebuild(p.lines)"></p>
+`)
+const paragraph = {
+  changes: 12,
+  lines: [
+    "Lorem ipsum dolor sit amet",
+    "consectetur adipiscing elit"
+  ]
+}
+const rebuild = (lines) => lines.join('<br>')
+mount('main', Paragraph, paragraph)
+```
+
+> `rebuild` will only be called if `changes` has changed.
+
+The idea is always to build first, tweak later if necessary. RedRunner makes that as clean and unobtrusive as possible.
+
+You can also do it
+
+### Two slot walrus
+
+
+
+You rarely use the three slot walrus, because other directives are more concise forms of it.
+
+For example:
+
+```html
+<button :="p.count|n>5|disabled">+</button>
+```
+
+Can be written like this:
+
+```html
+<button :disabled="p.count|n>5">+</button>
+```
+
+Or like this:
+
+```html
+<button :disabled="p.count>5">+</button>
+```
+
+The difference
+
+
+
+
+
+
+
+Which is identical to this:
+
+```html
+<span>Clicked {p.count|n} times</span>
+```
+
+And all three result in code which looks like this:
+
+```javascript
+function readValue(w, p, c) {
+  return p.count
+}
+function useValue(w, p, c, n, o) {
+  return 'Clicked ' + n + 'times'
 }
 ```
 
-> We don't bother calling `update()` as there are no component-controlled elements values, but you can safely mix both approaches, even with the same elements.
+You rarely use the three slot walrus, because other directives are more concise forms of it.
 
-You can use this feature to apply selective updates, which is useful for performance tweaking, but more about that later.
+For example:
 
-
-
-Note 
-
-Here is how we might use the old value:
-
-```javascript
-const UserName = Component.__ex__(html`
-  <div>Name: {..name|printName(n, o)}</div>
-`)
-
-const printName = (n, o) => n + o ? ` (was ${o})` : ''
-const user = {name: 'A'}
-
-mount('main', UserName, user)
-setTimeout(() => user.name = 'B', 2000)
+```html
+<button :="p.count|n>5|disabled">+</button>
 ```
 
-By the way, adding new directives doesn't bloat the bundle. We could add 20 different spellings of `:visible` or `:hidden`.
+Can be written like this:
+
+```html
+<button :disabled="p.count|n>5">+</button>
+```
+
+Or like this:
+
+```html
+<button :disabled="p.count>5">+</button>
+```
+
+The difference
+
+#### Updates
+
+
+
+
+
+
+
