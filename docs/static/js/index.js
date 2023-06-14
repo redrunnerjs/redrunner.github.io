@@ -4,14 +4,14 @@
  * Get stats from https://github.com/krausest/js-framework-benchmark (non-keyed)
  */
 var frameworkStats = [
-  { framework: 'angular', createRows: 2354, size: 38.26 },
-  { framework: 'inferno', createRows: 1800, size: 8.9 },
-  { framework: 'react', createRows: 2886, size: 38.33 },
-  { framework: 'redrunner', createRows: 1846, size: 3.8 },
-  { framework: 'riot', createRows: 2263, size: 7.23 },
-  { framework: 'svelte', createRows: 2167, size: 2.96 },
-  { framework: 'vanillajs', createRows: 1653, size: 2.17 },
-  { framework: 'vue-next', createRows: 1967, size: 20.3 }
+  { framework: 'Angular', createRows: 2354, size: 38.26 },
+  // { framework: 'inferno', createRows: 1800, size: 8.9 },
+  { framework: 'React', createRows: 2886, size: 38.33 },
+  { framework: 'Redrunner', createRows: 1846, size: 3.4 },
+  // { framework: 'riot', createRows: 2263, size: 7.23 },
+  { framework: 'Svelte', createRows: 2167, size: 2.96 },
+  { framework: '(Vanilla)', createRows: 1653, size: 2.17 },
+  { framework: 'Vue', createRows: 1967, size: 20.3 }
 ];
 
 // Scale is 0, 1, 2
@@ -22,18 +22,18 @@ var checkItems = [
 
 ]
 var frameworkChecks = [
-  { framework: 'angular', checks: {
+  { framework: 'Angular', checks: {
     'Direct DOM manipulation': 1,
     'Direct DOM manipulation': 1,
 
   }},
   { framework: 'inferno', createRows: 1800, size: 8.9 },
-  { framework: 'react', createRows: 2886, size: 38.33 },
-  { framework: 'redrunner', createRows: 1846, size: 3.8 },
+  { framework: 'React', createRows: 2886, size: 38.33 },
+  { framework: 'Redrunner', createRows: 1846, size: 3.8 },
   { framework: 'riot', createRows: 2263, size: 7.23 },
-  { framework: 'svelte', createRows: 2167, size: 2.96 },
-  { framework: 'vanillajs', createRows: 1653, size: 2.17 },
-  { framework: 'vue-next', createRows: 1967, size: 20.3 }
+  { framework: 'Svelte', createRows: 2167, size: 2.96 },
+  { framework: '(Vanilla)', createRows: 1653, size: 2.17 },
+  { framework: 'Vue', createRows: 1967, size: 20.3 }
 ];
 
 

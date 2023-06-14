@@ -2,9 +2,19 @@ html, button, input, select, textarea, .pure-g [class *= "pure-u"] {
   font-family: 'Hind', sans-serif;
  }
 
+::-webkit-scrollbar-thumb {
+  background: red;
+  border-radius: 10px;
+}
+
 /* Stops content being hidden behing the sticky header */
 html {
-  scroll-padding-top: 65px; 
+  scroll-padding-top: 65px;
+}
+
+.homepage {
+  margin: 40px auto;
+  max-width: 800px;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -209,6 +219,16 @@ table th {
   z-index: 20;
 }
 
+.toc::-webkit-scrollbar {
+  width: 8px;               /* width of the entire scrollbar */
+}
+
+.toc::-webkit-scrollbar-thumb {
+  background-color: rgb(168, 168, 168);    /* color of the scroll thumb */
+  border-radius: 20px;       /* roundness of the scroll thumb */
+  margin: 2px;
+}
+
 .toc .pure-menu-link:not(.pure-menu-heading),
 .toc-side .pure-menu-link:not(.pure-menu-heading),
 .nav-side .pure-menu-link:not(.pure-menu-heading) {
@@ -273,6 +293,7 @@ table th {
 
 .main__sidebar {
   display: none;
+  margin-right: 20px;
 }
 
 .main__content {
@@ -334,6 +355,7 @@ table th {
 .info img {
   border-radius: 7px;
   width: 100%;
+  margin: 0 auto;
 }
 
 .info__block {
@@ -610,13 +632,16 @@ i {
     display: block;
     position: sticky;
     top: 61px;
+    font-size: 14px;
     height: 100vh;
     overflow: auto;
+    width: 200px;
+    
   }
   
-  .main__content {
+  .content {
     max-width: 800px;
-    margin: 40px auto;
+    padding-left: 0px;
   }
 
   .logo__logo {

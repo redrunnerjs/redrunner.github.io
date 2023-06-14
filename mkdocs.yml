@@ -26,4 +26,7 @@ markdown_extensions:
         toc_depth: 2-5
 nav:
   - Home: /
-  - Tour: /tour
+  - Tour:
+    - At a glance: /tour/at-a-glance
+    - Basics: /tour/basics
+    - Advanced: /tour/advanced
